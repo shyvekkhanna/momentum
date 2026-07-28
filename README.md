@@ -1,24 +1,46 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+Momentum is an npm-workspaces monorepo: a Next.js web app plus a set of
+platform-agnostic packages meant to be reused by a future Expo/React Native
+app.
+
+```
+apps/
+  web/                 Next.js App Router UI (moved from the repo root)
+packages/
+  types/                @momentum/types         — Task, ShoppingList, shared enums
+  core/                 @momentum/core           — AI heuristics, task/shopping logic, stats, dates
+  storage/              @momentum/storage        — StorageDriver abstraction + repositories
+  notifications/        @momentum/notifications  — NotificationService abstraction + reminder scheduling
+```
+
+None of the packages touch a browser API directly. The web app is the only
+place that does: `apps/web/lib/storage/webStorageDriver.ts` implements
+`StorageDriver` with `window.localStorage`, and
+`apps/web/lib/notifications/webNotificationService.ts` implements
+`NotificationService` with the browser `Notification` API. A future Expo app
+would add its own drivers (`AsyncStorage`, `expo-notifications`) and reuse
+every package unchanged.
 
 ## Getting Started
 
-First, run the development server:
+Install dependencies once at the repo root (npm wires up the workspaces):
+
+```bash
+npm install
+```
+
+Then, from the root, run the development server:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+You can start editing the dashboard by modifying `apps/web/app/page.tsx`. The page auto-updates as you edit the file.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Other useful root-level scripts: `npm run build`, `npm run lint`, `npm run typecheck` (runs `tsc --noEmit` across every package).
+
+This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load Bricolage Grotesque.
 
 ## Learn More
 
